@@ -25,7 +25,7 @@ While having an online validation/verification service can provide a much better
 To ensure that hackers can't make a key-generator for your product, it's a good approach to not include the entire encoding logic in the client-installed binary files.  
 Basically the generated product-key contains several sections each of which is encoded using one algorithm but the encoding data differs for each section.  
 The product-key generation logic must know the encoding data for all sections as it will generate those sections but the client-installed application should only contain the encoding data for a sub-set of the sections.  
-Thus, the verification/validation process only checks some sections of each product-key but that should be enough, along with the checksum, to give a reasonable confidence in the product-key.  
+Thus, the validation/verification process only checks some sections of each product-key but that should be enough, along with the checksum, to give a reasonable confidence in the product-key.  
 Taking this approach, a hacker could only create a key-generator for a specific version/build of your software and once you release a new version with different sections "exposed", they'd have to crack it all over again.
 
 ###### 5. Typo Detection
@@ -37,8 +37,8 @@ This checksum will allow us to see that the user likely made a typo while enteri
 1. Create a new class that extends [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java).
 2. Create a new class that extends [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) and specify your [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java) class as the generic parameter.
 3. Create an instance of your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class and call the **generateProductKey(...)** method to generate a product-key.
-4. Call the **verifyProductKey(...)** method on your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class to verify/validate the product-key generated.
-5. To properly simulate a client verifying/validating a generated product-key, create a new instance of your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class but this time nullify some of those [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java) entries that you pass into this instance of the [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class.
+4. Call the **verifyProductKey(...)** method on your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class to validate/verify the product-key generated.
+5. To properly simulate a client validating/verifying a generated product-key, create a new instance of your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class but this time nullify some of those [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java) entries that you pass into this instance of the [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class.
 
 
 #### Example Code
