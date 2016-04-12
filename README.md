@@ -34,15 +34,15 @@ This checksum will allow us to see that the user likely made a typo while enteri
 
 
 ## Getting Started
-1. Create a new class that extends [ProductKeyEncodingData](./src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData).
-2. Create a new class that extends [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator) and specify your [ProductKeyEncodingData](./src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData) class as the generic parameter.
-3. Create an instance of your [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator) class and call the **generateProductKey(...)** method to generate a product-key.
-4. Call the **verifyProductKey(...)** method on your [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator) class to verify/validate the product-key generated.
-5. To properly simulate a client verifying/validating a generated product-key, create a new instance of your [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator) class but this time nullify some of those [ProductKeyEncodingData](./src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData) entries that you pass into this instance of the [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator) class.
+1. Create a new class that extends [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java).
+2. Create a new class that extends [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) and specify your [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java) class as the generic parameter.
+3. Create an instance of your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class and call the **generateProductKey(...)** method to generate a product-key.
+4. Call the **verifyProductKey(...)** method on your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class to verify/validate the product-key generated.
+5. To properly simulate a client verifying/validating a generated product-key, create a new instance of your [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class but this time nullify some of those [ProductKeyEncodingData](src/com/weilerhaus/productKeys/beans/ProductKeyEncodingData.java) entries that you pass into this instance of the [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java) class.
 
 
 #### Example Code
-For ease of readability I've create a [BasicProductKeyGenerator](com/weilerhaus/productKeys/impl/BasicProductKeyGenerator) class which serves as a basic [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator).
+For ease of readability I've create a [BasicProductKeyGenerator](src/com/weilerhaus/productKeys/impl/BasicProductKeyGenerator.java) class which serves as a basic [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java).
 ```java
 String tmpKey;
 ProductKeyState tmpGeneratedKeyState;
