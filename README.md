@@ -42,7 +42,7 @@ This checksum will allow us to see that the user likely made a typo while enteri
 
 
 #### Example Code
-For ease of readability I've create a [BasicProductKeyGenerator](com/weilerhaus/productKeys/impl/BasicProductKeyGenerator) class which serves as a basic [ProductKeyGenerator](com/weilerhaus/productKeys/ProductKeyGenerator).
+For ease of readability I've create a [BasicProductKeyGenerator](src/com/weilerhaus/productKeys/impl/BasicProductKeyGenerator.java) class which serves as a basic [ProductKeyGenerator](src/com/weilerhaus/productKeys/ProductKeyGenerator.java).
 ```java
 String tmpKey;
 ProductKeyState tmpGeneratedKeyState;
