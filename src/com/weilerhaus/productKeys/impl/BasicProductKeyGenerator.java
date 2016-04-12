@@ -9,12 +9,12 @@ import com.weilerhaus.productKeys.beans.ProductKeyEncodingData;
 import com.weilerhaus.productKeys.enums.ProductKeyState;
 import com.weilerhaus.productKeys.impl.beans.BasicProductKeyEncodingData;
 import com.weilerhaus.productKeys.impl.workers.BasicChecksumWorker;
-import com.weilerhaus.productKeys.impl.workers.BasicHyphenWorker;
 import com.weilerhaus.productKeys.impl.workers.BasicProductKeySectionWorker;
+import com.weilerhaus.productKeys.impl.workers.BasicProductKeyStylingWorker;
 import com.weilerhaus.productKeys.workers.BlacklistWorker;
 import com.weilerhaus.productKeys.workers.ChecksumWorker;
-import com.weilerhaus.productKeys.workers.HyphenWorker;
 import com.weilerhaus.productKeys.workers.ProductKeySectionWorker;
+import com.weilerhaus.productKeys.workers.ProductKeyStylingWorker;
 import com.weilerhaus.productKeys.workers.SeedAvailabilityWorker;
 
 /**
@@ -38,29 +38,22 @@ public class BasicProductKeyGenerator extends ProductKeyGenerator<BasicProductKe
 		
 		// @formatter:off
 		ProductKeyGenerator<BasicProductKeyEncodingData> productKeyGenerator = new BasicProductKeyGenerator(
-				new BasicProductKeyEncodingData((byte) 24, (byte) 3, (byte) 101),
-				new BasicProductKeyEncodingData((byte) 10, (byte) 4, (byte) 56),
-				new BasicProductKeyEncodingData((byte) 1, (byte) 2, (byte) 91),
-				new BasicProductKeyEncodingData((byte) 7, (byte) 1, (byte) 100),
-				new BasicProductKeyEncodingData((byte) 2, (byte) 36, (byte) 45),
-				new BasicProductKeyEncodingData((byte) 13, (byte) 5, (byte) 54),
-				new BasicProductKeyEncodingData((byte) 21, (byte) 67, (byte) 25),
-				new BasicProductKeyEncodingData((byte) 3, (byte) 76, (byte) 12),
-				new BasicProductKeyEncodingData((byte) 31, (byte) 22, (byte) 34),
-				new BasicProductKeyEncodingData((byte) 15, (byte) 72, (byte) 65)
+		        new BasicProductKeyEncodingData((byte) 24, (byte) 3, (byte) 101),
+		        new BasicProductKeyEncodingData((byte) 10, (byte) 4, (byte) 56),
+		        new BasicProductKeyEncodingData((byte) 1, (byte) 2, (byte) 91),
+		        new BasicProductKeyEncodingData((byte) 7, (byte) 1, (byte) 100),
+		        new BasicProductKeyEncodingData((byte) 2, (byte) 36, (byte) 45),
+		        new BasicProductKeyEncodingData((byte) 13, (byte) 5, (byte) 54),
+		        new BasicProductKeyEncodingData((byte) 21, (byte) 67, (byte) 25),
+		        new BasicProductKeyEncodingData((byte) 3, (byte) 76, (byte) 12),
+		        new BasicProductKeyEncodingData((byte) 31, (byte) 22, (byte) 34),
+		        new BasicProductKeyEncodingData((byte) 15, (byte) 72, (byte) 65)
 		);
 		// @formatter:on
 		
 		int tmpTryCount;
 		
 		System.out.println("**** BUILDING KEYS ****");
-		
-		final StringBuilder tmpMaxSeedHexSb = new StringBuilder();
-		
-		for (int n = 0; n < productKeyGenerator.getSeedCharLength(); n++ )
-		{
-			tmpMaxSeedHexSb.append('F');
-		}
 		
 		final Random randomGenerator = new Random(System.nanoTime());
 		
@@ -112,16 +105,16 @@ public class BasicProductKeyGenerator extends ProductKeyGenerator<BasicProductKe
 		
 		// @formatter:off
 		BasicProductKeyGenerator basicProductKeyGenerator = new BasicProductKeyGenerator(
-			new BasicProductKeyEncodingData((byte) 24, (byte) 3, (byte) 101),
-			null,
-			new BasicProductKeyEncodingData((byte) 1, (byte) 2, (byte) 91),
-			new BasicProductKeyEncodingData((byte) 7, (byte) 1, (byte) 100),
-			null,
-			null,
-			new BasicProductKeyEncodingData((byte) 21, (byte) 67, (byte) 25),
-			null,
-			new BasicProductKeyEncodingData((byte) 31, (byte) 22, (byte) 34),
-			null
+		    new BasicProductKeyEncodingData((byte) 24, (byte) 3, (byte) 101),
+		    null,
+		    new BasicProductKeyEncodingData((byte) 1, (byte) 2, (byte) 91),
+		    new BasicProductKeyEncodingData((byte) 7, (byte) 1, (byte) 100),
+		    null,
+		    null,
+		    new BasicProductKeyEncodingData((byte) 21, (byte) 67, (byte) 25),
+		    null,
+		    new BasicProductKeyEncodingData((byte) 31, (byte) 22, (byte) 34),
+		    null
 		);
 		// @formatter:on
 		
@@ -204,9 +197,9 @@ public class BasicProductKeyGenerator extends ProductKeyGenerator<BasicProductKe
 	}
 	
 	@Override
-	protected HyphenWorker buildHyphenWorker()
+	protected ProductKeyStylingWorker buildProductKeyStylingWorker()
 	{
-		return new BasicHyphenWorker();
+		return new BasicProductKeyStylingWorker();
 	}
 	
 	@Override

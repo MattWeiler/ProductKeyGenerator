@@ -11,8 +11,8 @@ import com.weilerhaus.productKeys.exceptions.SeedIsBlacklistedException;
 import com.weilerhaus.productKeys.utils.ProductKeyUtils;
 import com.weilerhaus.productKeys.workers.BlacklistWorker;
 import com.weilerhaus.productKeys.workers.ChecksumWorker;
-import com.weilerhaus.productKeys.workers.HyphenWorker;
 import com.weilerhaus.productKeys.workers.ProductKeySectionWorker;
+import com.weilerhaus.productKeys.workers.ProductKeyStylingWorker;
 import com.weilerhaus.productKeys.workers.SeedAvailabilityWorker;
 
 /**
@@ -77,9 +77,10 @@ public abstract class ProductKeyGenerator<ED extends ProductKeyEncodingData>
 	 */
 	private BlacklistWorker blacklistWorker = null;
 	/**
-	 * This will store the {@link HyphenWorker} to be used by this {@link ProductKeyGenerator}.
+	 * This will store the {@link ProductKeyStylingWorker} to be used by this
+	 * {@link ProductKeyGenerator}.
 	 */
-	private HyphenWorker hyphenWorker = null;
+	private ProductKeyStylingWorker productKeyStylingWorker = null;
 	/**
 	 * This will store the {@link SeedAvailabilityWorker} to be used by this
 	 * {@link ProductKeyGenerator}.
@@ -180,61 +181,73 @@ public abstract class ProductKeyGenerator<ED extends ProductKeyEncodingData>
 	 */
 	public ProductKeyState verifyProductKey(final String productKey)
 	{
-		// Verify that the format of the product-key is valid.
-		if ((this.getChecksumWorker() != null) && ( !this.getChecksumWorker().verifyProductKeyChecksum(productKey)))
+		if ((productKey != null) && (productKey.trim().length() > 0))
 		{
-			return ProductKeyState.KEY_INVALID;
-		}
-		
-		// Remove cosmetic hyphens and normalize case.
-		final String cleanedProductKey = productKey.replace("-", "").toUpperCase();
-		
-		// Test against blacklist.
-		if ((this.getBlacklistWorker() != null) && this.getBlacklistWorker().isKeyBlackListed(cleanedProductKey))
-		{
-			return ProductKeyState.KEY_BLACKLISTED;
-		}
-		
-		// If the product-key section bytes are present and valid in length, then verify the
-		// product-key sections.
-		if ((this.productKeyEncodingData != null) && (this.productKeyEncodingData.length > 0))
-		{
-			if (this.getProductKeySectionWorker() != null)
+			// Remove styling.
+			final String cleanedProductKey;
+			
+			if (this.getProductKeyStylingWorker() != null)
 			{
-				try
+				cleanedProductKey = this.getProductKeyStylingWorker().removeStyling(productKey).toUpperCase();
+			}
+			else
+			{
+				cleanedProductKey = productKey.toUpperCase();
+			}
+			
+			// Verify that the format of the product-key is valid.
+			if ((this.getChecksumWorker() != null) && ( !this.getChecksumWorker().verifyProductKeyChecksum(cleanedProductKey)))
+			{
+				return ProductKeyState.KEY_INVALID;
+			}
+			
+			// Test against blacklist.
+			if ((this.getBlacklistWorker() != null) && this.getBlacklistWorker().isKeyBlackListed(cleanedProductKey))
+			{
+				return ProductKeyState.KEY_BLACKLISTED;
+			}
+			
+			// If the product-key section bytes are present and valid in length, then verify the
+			// product-key sections.
+			if ((this.productKeyEncodingData != null) && (this.productKeyEncodingData.length > 0))
+			{
+				if (this.getProductKeySectionWorker() != null)
 				{
-					// Extract the seed from the product-key.
-					long seed = Long.parseLong(cleanedProductKey.substring(0, this.getSeedCharLength()), 16);
-					
-					int currentKeyCharIndex = this.getSeedCharLength();
-					String tmpKeySection;
-					
-					for (int n = 0; n < this.productKeyEncodingData.length; n++ )
+					try
 					{
-						// If the first byte of the current section is zero (0), then skip
-						// validating
-						// this section.
-						if (this.productKeyEncodingData[n] != null)
+						// Extract the seed from the product-key.
+						long seed = Long.parseLong(cleanedProductKey.substring(0, this.getSeedCharLength()), 16);
+						
+						int currentKeyCharIndex = this.getSeedCharLength();
+						String tmpKeySection;
+						
+						for (int n = 0; n < this.productKeyEncodingData.length; n++ )
 						{
-							tmpKeySection = cleanedProductKey.substring(currentKeyCharIndex, currentKeyCharIndex + 2);
-							
-							if ( !tmpKeySection.equals(ProductKeyUtils.buildHexStr(2, this.getProductKeySectionWorker().buildProductKeySection(seed, this.productKeyEncodingData[n]))))
+							// If the first byte of the current section is zero (0), then skip
+							// validating
+							// this section.
+							if (this.productKeyEncodingData[n] != null)
 							{
-								return ProductKeyState.KEY_PHONY;
+								tmpKeySection = cleanedProductKey.substring(currentKeyCharIndex, currentKeyCharIndex + 2);
+								
+								if ( !tmpKeySection.equals(ProductKeyUtils.buildHexStr(2, this.getProductKeySectionWorker().buildProductKeySection(seed, this.productKeyEncodingData[n]))))
+								{
+									return ProductKeyState.KEY_PHONY;
+								}
 							}
+							
+							currentKeyCharIndex += 2;
 						}
 						
-						currentKeyCharIndex += 2;
+						// If we get this far, then it means the key is either good, or was made
+						// with a keygen derived from "this" release.
+						return ProductKeyState.KEY_GOOD;
 					}
-					
-					// If we get this far, then it means the key is either good, or was made
-					// with a keygen derived from "this" release.
-					return ProductKeyState.KEY_GOOD;
-				}
-				catch (NumberFormatException nfe)
-				{
-					// TODO: log this ...
-					
+					catch (NumberFormatException nfe)
+					{
+						// TODO: log this ...
+						
+					}
 				}
 			}
 		}
@@ -305,9 +318,9 @@ public abstract class ProductKeyGenerator<ED extends ProductKeyEncodingData>
 					}
 					
 					// Add dashes to the product-key and return it.
-					if (this.getHyphenWorker() != null)
+					if (this.getProductKeyStylingWorker() != null)
 					{
-						return this.getHyphenWorker().addHyphens(keySb.toString());
+						return this.getProductKeyStylingWorker().addStyling(keySb.toString());
 					}
 					
 					return keySb.toString();
@@ -357,13 +370,13 @@ public abstract class ProductKeyGenerator<ED extends ProductKeyEncodingData>
 	protected abstract BlacklistWorker buildBlacklistWorker();
 	
 	/**
-	 * This method will build the {@link HyphenWorker} to be used by this
+	 * This method will build the {@link ProductKeyStylingWorker} to be used by this
 	 * {@link ProductKeyGenerator}.
 	 * 
 	 * @return
-	 * The {@link HyphenWorker} to be used by this {@link ProductKeyGenerator}.
+	 * The {@link ProductKeyStylingWorker} to be used by this {@link ProductKeyGenerator}.
 	 */
-	protected abstract HyphenWorker buildHyphenWorker();
+	protected abstract ProductKeyStylingWorker buildProductKeyStylingWorker();
 	
 	/**
 	 * This method will build the {@link SeedAvailabilityWorker} to be used by this
@@ -427,19 +440,20 @@ public abstract class ProductKeyGenerator<ED extends ProductKeyEncodingData>
 	}
 	
 	/**
-	 * This method will get the {@link HyphenWorker} to be used by this {@link ProductKeyGenerator}.
+	 * This method will get the {@link ProductKeyStylingWorker} to be used by this
+	 * {@link ProductKeyGenerator}.
 	 * 
 	 * @return
-	 * The {@link HyphenWorker} to be used by this {@link ProductKeyGenerator}.
+	 * The {@link ProductKeyStylingWorker} to be used by this {@link ProductKeyGenerator}.
 	 */
-	private HyphenWorker getHyphenWorker()
+	private ProductKeyStylingWorker getProductKeyStylingWorker()
 	{
-		if (this.hyphenWorker == null)
+		if (this.productKeyStylingWorker == null)
 		{
-			this.hyphenWorker = this.buildHyphenWorker();
+			this.productKeyStylingWorker = this.buildProductKeyStylingWorker();
 		}
 		
-		return this.hyphenWorker;
+		return this.productKeyStylingWorker;
 	}
 	
 	/**

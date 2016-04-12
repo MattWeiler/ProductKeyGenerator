@@ -1,13 +1,13 @@
 package com.weilerhaus.productKeys.impl.workers;
 
-import com.weilerhaus.productKeys.workers.HyphenWorker;
+import com.weilerhaus.productKeys.workers.ProductKeyStylingWorker;
 
-public class BasicHyphenWorker implements HyphenWorker
+public class BasicProductKeyStylingWorker implements ProductKeyStylingWorker
 {
 	
 	
 	@Override
-	public String addHyphens(final String productKey)
+	public String addStyling(final String productKey)
 	{
 		if ((productKey != null) && (productKey.trim().length() > 0))
 		{
@@ -17,9 +17,9 @@ public class BasicHyphenWorker implements HyphenWorker
 			
 			for (int n = (productKeySb.length() - 1); n >= 0; n-- )
 			{
-				if (n >= 6)
+				if (n >= 5)
 				{
-					if (tmpCharsSinceDash >= 6)
+					if (tmpCharsSinceDash >= 5)
 					{
 						productKeySb.insert(n, '-');
 						tmpCharsSinceDash = 0;
@@ -38,7 +38,18 @@ public class BasicHyphenWorker implements HyphenWorker
 			return productKeySb.toString();
 		}
 		
-		return null;
+		return productKey;
+	}
+	
+	@Override
+	public String removeStyling(String productKey)
+	{
+		if ((productKey != null) && (productKey.trim().length() > 0))
+		{
+			return productKey.replace("-", "");
+		}
+		
+		return productKey;
 	}
 	
 }

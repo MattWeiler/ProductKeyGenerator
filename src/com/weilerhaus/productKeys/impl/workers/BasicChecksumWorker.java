@@ -12,7 +12,7 @@ public class BasicChecksumWorker implements ChecksumWorker
 	{
 		if ((productKey != null) && (productKey.trim().length() > 0))
 		{
-			productKey = productKey.trim().replace("-", "").toUpperCase();
+			productKey = productKey.trim();
 			
 			int left = 0x0056;
 			int right = 0x00AF;
@@ -45,7 +45,7 @@ public class BasicChecksumWorker implements ChecksumWorker
 	{
 		if ((productKey != null) && (productKey.trim().length() > 0))
 		{
-			productKey = productKey.trim().replace("-", "").toUpperCase();
+			productKey = productKey.trim();
 			
 			if (productKey.length() > 4)
 			{
