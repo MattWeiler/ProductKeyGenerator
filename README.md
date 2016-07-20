@@ -4,6 +4,9 @@ A simple but powerful product-key generator written in Java.
 This code has been based off of an example article found at:  
 http://www.brandonstaggs.com/2007/07/26/implementing-a-partial-serial-number-verification-system-in-delphi/
 
+This example caught my eye since pascal/Delphi were my first encounter with programming.
+I just ported this example to Java as that's what I now use everyday.
+
 
 ## Introduction
 The basic idea behind this product-key generator is that not all of the encoding/decoding logic is included in the client-installed application binary files.  
